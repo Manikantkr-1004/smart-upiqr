@@ -1,7 +1,7 @@
 {
   "name": "smart-upiqr",
   "description": "Easily generate branded UPI QR codes and payment links with customizable options for JavaScript and Node.js.",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "author": "Manikant Kumar",
   "license": "MIT",
   "type": "module",
