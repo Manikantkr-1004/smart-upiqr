@@ -22,7 +22,6 @@ export interface UPILinkOptions {
   MerchantCode?: string;
   TransactionRef?: string;
   TransactionId?: string;
-  GST?: { Total?: number; CGST?: number; SGST?: number; IGST?: number };
   invoiceNo?: string;
   invoiceDate?: boolean;
   QrExpireDays?: number;
@@ -76,7 +75,6 @@ export function UPILink(options: UPILinkOptions): string {
     MerchantCode,
     TransactionRef,
     TransactionId,
-    GST,
     invoiceNo,
     invoiceDate,
     QrExpireDays,
@@ -94,17 +92,6 @@ export function UPILink(options: UPILinkOptions): string {
     throw new Error(`"Amount" must be number > 0. Received: ${Amount}`);
   }
 
-  if (
-    (GST?.Total && (isNaN(GST.Total) || GST.Total < 0)) ||
-    (GST?.CGST && (isNaN(GST.CGST) || GST.CGST < 0)) ||
-    (GST?.SGST && (isNaN(GST.SGST) || GST.SGST < 0)) ||
-    (GST?.IGST && (isNaN(GST.IGST) || GST.IGST < 0))
-  ) {
-    throw new Error(
-      `"Total/CGST/SGST/IGST" must be number >=0 . Received: ${GST}`
-    );
-  }
-
   if (QrExpireDays && (isNaN(QrExpireDays) || QrExpireDays <= 0)) {
     throw new Error(
       `"QrExpireDays" must be number > 0 for Future expiry. Received: ${QrExpireDays}`
@@ -113,31 +100,23 @@ export function UPILink(options: UPILinkOptions): string {
 
   const now = new Date();
 
-  let upi = `upi://pay?pa=${encodeURIComponent(
-    PayeeUPI
-  )}&pn=${encodeURIComponent(PayeeName)}&am=${encodeURIComponent(
-    Amount
-  )}&cu=INR`;
+  let upi = `upi://pay?pa=${PayeeUPI}&pn=${PayeeName}&am=${Amount}&cu=INR`;
 
-  if (TransactionNote) upi += `&tn=${encodeURIComponent(TransactionNote)}`;
-  if (MerchantCode) upi += `&mc=${encodeURIComponent(MerchantCode)}`;
-  if (TransactionRef) upi += `&tr=${encodeURIComponent(TransactionRef)}`;
-  if (TransactionId) upi += `&tid=${encodeURIComponent(TransactionId)}`;
-  if (invoiceNo) upi += `&invoiceNo=${encodeURIComponent(invoiceNo)}`;
-  if (GST)
-    upi += `&gstBrkUp=${encodeURIComponent(
-      `GST:${GST.Total || 0.0}|CGST:${GST.CGST || 0.0}|SGST:${GST.SGST || 0.0}|IGST:${GST.IGST || 0.0}`
-    )}`;
+  if (TransactionNote) upi += `&tn=${TransactionNote}`;
+  if (MerchantCode) upi += `&mc=${MerchantCode}`;
+  if (TransactionRef) upi += `&tr=${TransactionRef}`;
+  if (TransactionId) upi += `&tid=${TransactionId}`;
+  if (invoiceNo) upi += `&invoiceNo=${invoiceNo}`;
 
-  if (invoiceDate) upi += `&invoiceDate=${encodeURIComponent(formatDateIsoWithOffset(now))}`;
-  if (QrTimestamp) upi += `&QRts=${encodeURIComponent(formatDateIsoWithOffset(now))}`;
+  if (invoiceDate) upi += `&invoiceDate=${formatDateIsoWithOffset(now)}`;
+  if (QrTimestamp) upi += `&QRts=${formatDateIsoWithOffset(now)}`;
 
   if (QrExpireDays) {
     const expireDate = new Date(now.getTime() + QrExpireDays * 86400000);
-    upi += `&QRexpire=${encodeURIComponent(formatDateIsoWithOffset(expireDate))}`;
+    upi += `&QRexpire=${formatDateIsoWithOffset(expireDate)}`;
   }
 
-  if (GSTno) upi += `&gstIn=${encodeURIComponent(GSTno)}`;
+  if (GSTno) upi += `&gstIn=${GSTno}`;
 
   return upi;
 }

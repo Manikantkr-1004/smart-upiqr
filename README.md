@@ -7,6 +7,8 @@ Easily generate branded UPI QR codes and payment links with customizable options
 ![npm downloads](https://img.shields.io/npm/dm/smart-upiqr)
 ![license](https://img.shields.io/npm/l/smart-upiqr)
 
+![home](https://github.com/user-attachments/assets/24d2df63-623e-4066-a417-9e045e90f452)
+
 ## Installation
 
 ```bash
@@ -51,6 +53,7 @@ function generateUPILink() {
     PayeeUPI: "test@upi",
     PayeeName: "Smart Demo",
     Amount: 499,  // Must be > 0
+    TransactionNote: 'ID|lSDFG23llsd|Note',
     QrExpireDays: 5 // The QR payment link won't work after 5 days, For more info, read below
   });
 
@@ -101,11 +104,10 @@ Generates a UPIQr / UPILink with flexible options.
 | **PayeeUPI**    | `string`                           | Yes      | Payment Receiver (Payee) Person/Business/Merchant UPI ID                                             |
 | **PayeeName**   | `string`                           | Yes      | Payment Receiver (Payee) Person/Business/Merchant Name                               |
 | **Amount**      | `number`                           | Yes      | Total amount to receive                                                     |
-| TransactionNote | `string`                           | No       | Transaction Note (max 50 chracter and can use same Transaction Id)                                                           |
-| MerchantCode    | `string`                           | No       | Merchant Code                                                               |
-| TransactionRef  | `string`                           | No       | Transaction Reference (Can use same TransactionId)                                                      |
-| TransactionId   | `string`                           | No       | Transaction ID (Transaction id of payment or any unique id for reference)                                                             |
-| GST             | `{ Total?: number, CGST?: number, SGST?: number, IGST?: number}`                           | No       | GST details if available or want to pass (see below)                                                     |
+| TransactionNote | `string`                           | No       | Transaction Note (max 50 chracter and can use same TransactionId)                                                           |
+| MerchantCode    | `string`                           | No       | Merchant Category Code (max 4 digit)                                                               |
+| TransactionRef  | `string`                           | No       | Transaction Reference (max 35 character and Can use same TransactionId)                                                      |
+| TransactionId   | `string`                           | No       | Transaction ID (max 35 character and Transaction id of payment or any unique id for reference)                                                             |
 | invoiceNo       | `string`                           | No       | Invoice number                                                              |
 | invoiceDate     | `boolean`                          | No       | Whether to include invoice date (If passed true then automatic add current DateTime)                                            |
 | QrExpireDays    | `number`                           | No       | QR Code expiry in days (Pass number values greater than 0 to make QR expirable after that day from now)                                                     |
@@ -118,6 +120,7 @@ Generates a UPIQr / UPILink with flexible options.
 
 > **Note:**  
 > - Fields marked **(QR Only)** apply only when generating QR images so do not pass these marked option if generating UPI payment link 
+> - Pass only correct values/details, Passing invalid/wrong values or extra spaces/symbols might cause not working UPI link / QR
 > - Required fields: `PayeeUPI`, `PayeeName`, `Amount`. for UPI payment Link and UPI QR code
 > - `QrExpireDays` and `TransactionNote` and `GST` doesn't support in all UPI Apps so it might not show/work after scan so do not worry
 
