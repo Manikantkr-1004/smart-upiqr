@@ -26,50 +26,66 @@ pnpm add smart-upiqr
 
 ```html
 <!-- Latest version -->
-<script src="https://cdn.jsdelivr.net/npm/smart-upiqr/dist/smart-upiqr.umd.min.js"></script> or
+<script src="https://cdn.jsdelivr.net/npm/smart-upiqr/dist/smart-upiqr.umd.min.js"></script>
+<!-- or -->
 <script src="https://unpkg.com/smart-upiqr/dist/smart-upiqr.umd.min.js"></script>
 
 <!-- Or pin to a specific version -->
-<script src="https://cdn.jsdelivr.net/npm/smart-upiqr@1.0.0/dist/smart-upiqr.umd.min.js"></script> or
+<script src="https://cdn.jsdelivr.net/npm/smart-upiqr@1.0.0/dist/smart-upiqr.umd.min.js"></script>
+<!-- or -->
 <script src="https://unpkg.com/smart-upiqr@1.0.0/dist/smart-upiqr.umd.min.js"></script>
 
 <script>
+/*
+  ✅ Usage in Vanilla JS
+  - UPI link can be used in <a href="..." target="_blank"> so that when clicked on mobile/tablet,
+    it opens available UPI apps for payment.
+  - UPI QR can be displayed inside an <img> tag so users can scan it with any UPI app.
+*/
 
-// Generate UPI payment link and UPI Qr code in vanilla HTML javascript website
-// Generated UPI link use in href attribute in anchor tag with target _blank so when user click on it in tablet or mobile so it'll show all installed UPI Apps and after choose will redirect to that app for payment with that passed values
-// Generated UPI QR code url use in img tag with src attribute to show so that anyone can scan via UPI apps for payment
-
- generateUPILink(); // call the function when need to generate
-
- function generateUPILink() {
-  const upiLink = smartupiqr.UPILink({
+// Generate UPI payment link
+function generateUPILink() {
+  const upiLink = smartUPIQr.UPILink({
     PayeeUPI: "test@upi",
     PayeeName: "Smart Demo",
-    Amount: 499,  // Must be greater than 0
+    Amount: 499, // Must be > 0
   });
+
   console.log("Payment Link:", upiLink);
-  document.querySelector('#upianchor').href = upiLink; // to set link in anchor tag
- }
 
-  generateUPIQR(); // call function when need to generate and show in the UI
+  // Example: set the link in an anchor tag
+  document.querySelector("#upianchor").href = upiLink;
+}
 
-  async function generateUPIQR() {
-    try{
-      const upiQR = await smartupiqr.UPIQR({
-        PayeeUPI: "test@upi",
-        PayeeName: "Smart Demo",
-        Amount: 275, // Must be greater than 0
-        logo: "https://example.com/logo.png", // Must be PNG or JPEG format either remote / local url like '/person.png' or '/https://domain.com/photo.png'
-      })
-      console.log("UPI QR URL", upiQR);
-      document.querySelector('#upiQrImg').src = upiQR; // to set url in img tag
-    }catch(err) {
-      console.error(err, 'Error while generating UPIQR')
-    }
+// Generate UPI QR code
+async function generateUPIQR() {
+  try {
+    const upiQR = await smartUPIQr.UPIQR({
+      PayeeUPI: "test@upi",
+      PayeeName: "Smart Demo",
+      Amount: 275, // Must be > 0
+      logo: "https://example.com/logo.png", // PNG or JPEG (remote/local allowed)
+    });
+
+    console.log("UPI QR URL:", upiQR);
+
+    // Example: set the QR image in an <img> tag
+    document.querySelector("#upiQrImg").src = upiQR;
+  } catch (err) {
+    console.error("Error while generating UPI QR:", err);
   }
-</script>
-```
+}
 
+// Example calls
+generateUPILink();
+generateUPIQR();
+</script>
+
+<!-- Example HTML structure -->
+<a id="upianchor" target="_blank">Pay Now</a>
+<img id="upiQrImg" alt="Scan to Pay via UPI" />
+
+```
 
 ## Usage After Installation
 
@@ -86,46 +102,52 @@ const { UPILink, UPIQR } = require("smart-upiqr");
 ### Basic Example
 
 ```javascript
-// Generate UPI payment link and UPI Qr code in library or framework frontend (to show on mount, use useEffect else call function when needs) or in nodejs backend to send UPI payment links and UPI Qr code through your own API to frontend
-// Generated UPI link use in href attribute in anchor tag with target _blank so when user click on it in tablet or mobile so it'll show all installed UPI Apps and after choose will redirect to that app for payment with that passed values
-// Generated UPI QR code url use in img tag with src attribute to show so that anyone can scan via UPI apps for payment
+// Example usage after installing your package from npm
+// No need to install or import 'qrcode' separately — it's already bundled
 
- generateUPILink(); // call the function when need to generate
+// Generate UPI link (can be used in <a href={upiLink} target="_blank">Pay Now</a>)
+generateUPILink();
 
- function generateUPILink() {
+function generateUPILink() {
   const upiLink = UPILink({
     PayeeUPI: "test@upi",
     PayeeName: "Smart Demo",
-    Amount: 499,  // Must be greater than 0
+    Amount: 499,  // Must be > 0
   });
+
   console.log("Payment Link:", upiLink);
-  setUpiLink(upiLink); // or return direct upiLink if needs
- }
 
-  generateUPIQR(); // call the function when need to generate
+  // Save in state if using React, or just return/use directly
+  setUpiLink(upiLink);
+}
 
-  async function generateUPIQR() {
-    try{
-      const upiQR = await UPIQR({
-        PayeeUPI: "test@upi",
-        PayeeName: "Smart Demo",
-        Amount: 275, // Must be greater than 0
-        logo: "https://example.com/logo.png", // Must be PNG or JPEG format either remote / local url like '/person.png' or '/https://domain.com/photo.png'
-        logoSize: 80,
-        color: {
-          dark: '#000000', // qrcode itself color
-          light: '#FFFFFF' // qrcode background color
-        }
-      })
-      
-      // save in useState/useReducer/Redux or any if using React, NextJS etc and start to show via img tag
-      setUpiQrSrc(upiQR);
-    }catch(err) {
-      console.error(err, 'Error while generating UPIQR')
-    }
+// Generate UPI QR (can be used in <img src={upiQR} alt="UPI QR" />)
+generateUPIQR();
+
+async function generateUPIQR() {
+  try {
+    const upiQR = await UPIQR({
+      PayeeUPI: "test@upi",
+      PayeeName: "Smart Demo",
+      Amount: 275, // Must be > 0
+      logo: "https://example.com/logo.png", // PNG/JPEG only (remote or local path)
+      logoSize: 80,
+      color: {
+        dark: "#000000", // QR code color
+        light: "#FFFFFF" // QR code background
+      }
+    });
+
+    console.log("Payment QR:", upiQR);
+
+    // Save in state if using React, or return directly
+    setUpiQrSrc(upiQR);
+  } catch (err) {
+    console.error("Error while generating UPIQR:", err);
   }
-```
+}
 
+```
 
 ## API
 
@@ -152,12 +174,11 @@ Generates a UPIQr / UPILink with flexible options.
 | **logo** (QR Only)       | `string` (URL/local path)                     | No       | Logo image URL like 'https://domain.com/brandlogo.png' or '/person.png' (supported only `PNG` & `JPEG` type)                    |
 | **logoSize** (QR Only)   | `number`                      | No       | Logo size value greater than 5-10 for better view                                               |
 | **color** (QR Only)      | `{ dark?: string, light?: string}` | No       | QR code hex colors (dark for QR itself: Default #000000 and light for background: Default #FFFFFF)                        |
-| **type** (QR Only)       | `'base64' , 'png' , 'svg'`         | No       | QR code output type (default: `base64`)                           |
+
 
 > **Note:**  
 > - Fields marked **(QR Only)** apply only when generating QR images so do not pass these marked option if generating UPI payment link 
 > - Required fields: `PayeeUPI`, `PayeeName`, `Amount`. for UPI payment Link and UPI QR code
-> - If you choose `type` svg to generate UPI Qr then logo can't add in the UPI QR code if you have passed it
 > - `QrExpireDays` and `TransactionNote` and `GST` doesn't support in all UPI Apps so it might not show after scan so do not worry
 
 

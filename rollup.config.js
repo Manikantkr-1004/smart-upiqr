@@ -1,31 +1,28 @@
-import typescript from "@rollup/plugin-typescript";
-import terser from "@rollup/plugin-terser";
+import typescript from '@rollup/plugin-typescript';
+import resolve from '@rollup/plugin-node-resolve';
+import commonjs from '@rollup/plugin-commonjs';
 
 export default {
-  input: "src/index.ts",
-  external: ['qrcode','jimp'],
+  input: 'src/index.ts',
   output: [
     {
-      file: "dist/smart-upiqr.umd.js",
-      format: "umd",
-      name: "smartupiqr",
+      file: 'dist/smart-upiqr.umd.js',
+      format: 'umd',
+      name: 'smartupiqr',
       sourcemap: true,
-      globals: {
-        qrcode: 'QRCode',
-        jimp: 'Jimp'
-      }
     },
     {
-      file: "dist/smart-upiqr.umd.min.js",
-      format: "umd",
-      name: "smartupiqr",
+      file: 'dist/smart-upiqr.umd.min.js',
+      format: 'umd',
+      name: 'smartupiqr',
       sourcemap: true,
-      plugins: [terser()],
-      globals: {
-        qrcode: 'QRCode',
-        jimp: 'Jimp'
-      }
+      compact: true,
+    },
+    {
+      file: 'dist/esm/index.js',
+      format: 'esm',
+      sourcemap: true,
     },
   ],
-  plugins: [typescript()],
+  plugins: [resolve(), commonjs(), typescript()],
 };
