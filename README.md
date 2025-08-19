@@ -22,70 +22,9 @@ pnpm add smart-upiqr
 
 ## Using SmartUpiQr from a CDN
 
-[smartupiqr is available on jsDelivr](https://www.jsdelivr.com/package/npm/smart-upiqr) and [unpkg](https://unpkg.com/browse/smart-upiqr/), so you can use it directly in the browser without installing via npm. Just include the script, and `SmartUpiQr` will be available globally:
+Currently CDN of this package is not available and workable to use. In future it can be available to use in Vanilla website via CDN.
 
-```html
-<!-- Latest version -->
-<script src="https://cdn.jsdelivr.net/npm/smart-upiqr/dist/smart-upiqr.umd.min.js"></script>
-<!-- or -->
-<script src="https://unpkg.com/smart-upiqr/dist/smart-upiqr.umd.min.js"></script>
-
-<!-- Or pin to a specific version -->
-<script src="https://cdn.jsdelivr.net/npm/smart-upiqr@1.0.0/dist/smart-upiqr.umd.min.js"></script>
-<!-- or -->
-<script src="https://unpkg.com/smart-upiqr@1.0.0/dist/smart-upiqr.umd.min.js"></script>
-
-<script>
-/*
-  ✅ Usage in Vanilla JS
-  - UPI link can be used in <a href="..." target="_blank"> so that when clicked on mobile/tablet,
-    it opens available UPI apps for payment.
-  - UPI QR can be displayed inside an <img> tag so users can scan it with any UPI app.
-*/
-
-// Generate UPI payment link
-function generateUPILink() {
-  const upiLink = smartUPIQr.UPILink({
-    PayeeUPI: "test@upi",
-    PayeeName: "Smart Demo",
-    Amount: 499, // Must be > 0
-  });
-
-  console.log("Payment Link:", upiLink);
-
-  // Example: set the link in an anchor tag
-  document.querySelector("#upianchor").href = upiLink;
-}
-
-// Generate UPI QR code
-async function generateUPIQR() {
-  try {
-    const upiQR = await smartUPIQr.UPIQR({
-      PayeeUPI: "test@upi",
-      PayeeName: "Smart Demo",
-      Amount: 275, // Must be > 0
-      logo: "https://example.com/logo.png", // PNG or JPEG (remote/local allowed)
-    });
-
-    console.log("UPI QR URL:", upiQR);
-
-    // Example: set the QR image in an <img> tag
-    document.querySelector("#upiQrImg").src = upiQR;
-  } catch (err) {
-    console.error("Error while generating UPI QR:", err);
-  }
-}
-
-// Example calls
-generateUPILink();
-generateUPIQR();
-</script>
-
-<!-- Example HTML structure -->
-<a id="upianchor" target="_blank">Pay Now</a>
-<img id="upiQrImg" alt="Scan to Pay via UPI" />
-
-```
+So now you can use it after installation via NPM or Yarn or PNPM
 
 ## Usage After Installation
 
@@ -103,7 +42,6 @@ const { UPILink, UPIQR } = require("smart-upiqr");
 
 ```javascript
 // Example usage after installing your package from npm
-// No need to install or import 'qrcode' separately — it's already bundled
 
 // Generate UPI link (can be used in <a href={upiLink} target="_blank">Pay Now</a>)
 generateUPILink();
@@ -113,6 +51,7 @@ function generateUPILink() {
     PayeeUPI: "test@upi",
     PayeeName: "Smart Demo",
     Amount: 499,  // Must be > 0
+    QrExpireDays: 5 // The QR payment link won't work after 5 days, For more info, read below
   });
 
   console.log("Payment Link:", upiLink);
@@ -130,11 +69,12 @@ async function generateUPIQR() {
       PayeeUPI: "test@upi",
       PayeeName: "Smart Demo",
       Amount: 275, // Must be > 0
-      logo: "https://example.com/logo.png", // PNG/JPEG only (remote or local path)
+      QrExpireDays: 10, // The QRcode scan won't work after 10 days, For more info, read below
+      logo: "https://example.com/logo.png", // remote or local path like "/logo.png" or "/src/assets/logo.png"
       logoSize: 80,
       color: {
-        dark: "#000000", // QR code color
-        light: "#FFFFFF" // QR code background
+        dark: "#f50baf", // QR code itself color
+        light: "#FFFFFF" // QR code background color
       }
     });
 
@@ -171,7 +111,7 @@ Generates a UPIQr / UPILink with flexible options.
 | QrExpireDays    | `number`                           | No       | QR Code expiry in days (Pass number values greater than 0 to make QR expirable after that day from now)                                                     |
 | QrTimestamp     | `boolean`                          | No       | Whether to add timestamp in QR (If passed true then will automatic add current DateTime)                                             |
 | GSTno           | `string`                           | No       | GST Number of business                                                      |
-| **logo** (QR Only)       | `string` (URL/local path)                     | No       | Logo image URL like 'https://domain.com/brandlogo.png' or '/person.png' (supported only `PNG` & `JPEG` type)                    |
+| **logo** (QR Only)       | `string` (URL/local path)                     | No       | Logo image URL like 'https://domain.com/brandlogo.png' or '/person.png' or 'src/assets/logo.png'                |
 | **logoSize** (QR Only)   | `number`                      | No       | Logo size value greater than 5-10 for better view                                               |
 | **color** (QR Only)      | `{ dark?: string, light?: string}` | No       | QR code hex colors (dark for QR itself: Default #000000 and light for background: Default #FFFFFF)                        |
 
@@ -179,7 +119,7 @@ Generates a UPIQr / UPILink with flexible options.
 > **Note:**  
 > - Fields marked **(QR Only)** apply only when generating QR images so do not pass these marked option if generating UPI payment link 
 > - Required fields: `PayeeUPI`, `PayeeName`, `Amount`. for UPI payment Link and UPI QR code
-> - `QrExpireDays` and `TransactionNote` and `GST` doesn't support in all UPI Apps so it might not show after scan so do not worry
+> - `QrExpireDays` and `TransactionNote` and `GST` doesn't support in all UPI Apps so it might not show/work after scan so do not worry
 
 
 ## License

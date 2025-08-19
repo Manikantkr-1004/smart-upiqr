@@ -126,7 +126,7 @@ export function UPILink(options: UPILinkOptions): string {
   if (invoiceNo) upi += `&invoiceNo=${encodeURIComponent(invoiceNo)}`;
   if (GST)
     upi += `&gstBrkUp=${encodeURIComponent(
-      `GST:${GST.Total}|CGST:${GST.CGST}|SGST:${GST.SGST}|IGST:${GST.IGST}`
+      `GST:${GST.Total || 0.0}|CGST:${GST.CGST || 0.0}|SGST:${GST.SGST || 0.0}|IGST:${GST.IGST || 0.0}`
     )}`;
 
   if (invoiceDate) upi += `&invoiceDate=${encodeURIComponent(formatDateIsoWithOffset(now))}`;
